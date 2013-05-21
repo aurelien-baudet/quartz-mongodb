@@ -906,9 +906,9 @@ public class MongoDBJobStore implements JobStore, Constants {
 		trigger = (BasicDBObject) tpd.injectExtraPropertiesForInsert(newTrigger, trigger);
 
 		try {
-			DBObject oldTrigger = triggerCollection.findOne(keyToDBObject(newTrigger.getKey()));
-			if (replaceExisting && oldTrigger != null) {
-				triggerCollection.remove(oldTrigger);
+			// remove all triggers with the key (in case of duplicate objects)
+			if (replaceExisting) {
+				triggerCollection.remove(keyToDBObject(newTrigger.getKey()));
 			}
 			triggerCollection.insert(trigger);
 		} catch (DuplicateKey key) {
