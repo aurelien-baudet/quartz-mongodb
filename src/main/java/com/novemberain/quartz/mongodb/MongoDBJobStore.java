@@ -908,10 +908,9 @@ public class MongoDBJobStore implements JobStore, Constants {
 		try {
 			DBObject oldTrigger = triggerCollection.findOne(keyToDBObject(newTrigger.getKey()));
 			if (replaceExisting && oldTrigger != null) {
-				triggerCollection.update(oldTrigger, trigger);
-			} else {
-				triggerCollection.insert(trigger);
+				triggerCollection.remove(oldTrigger);
 			}
+			triggerCollection.insert(trigger);
 		} catch (DuplicateKey key) {
 			throw new ObjectAlreadyExistsException(newTrigger);
 		}
